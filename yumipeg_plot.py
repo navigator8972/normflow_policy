@@ -11,11 +11,11 @@ base_filename = '/home/shahbaz/Software/garage36/normflow_policy/data/local/expe
 exp_name = 'yumipeg_ppo_garage_51'
 
 SUCCESS_DIST = 0.02
-plot_skip = 20
-plot_traj = False
+plot_skip = 1
+plot_traj = True
 traj_skip = 3
 epoch_start = 0
-epoch_num = 100
+epoch_num = 9
 T = 200
 tm = range(T)
 plot_energy = False
@@ -29,6 +29,8 @@ for i in range(epoch_start,epoch_num):
         infile.close()
         epoch = ep_data['stats'].last_episode
         # sample_num = len(epoch)
+        T = epoch[0]['observations'].shape[0]
+        tm = range(T)
         ep = epoch[0]['observations'][:,:3].reshape(T,1,3)
         ep = np.concatenate((ep, epoch[0]['env_infos']['er'].reshape(T, 1, 3)),axis=2)
         ev = epoch[0]['observations'][:, 3:].reshape(T, 1, 3)
@@ -43,6 +45,7 @@ for i in range(epoch_start,epoch_num):
         for sp in range(0,sample_num):
             if ((sp == 0) or (not ((sp + 1) % traj_skip))):
                 sample = epoch[sp]
+                T = sample['observations'].shape[0]
                 ep_ = sample['observations'][:, :3].reshape(T, 1, 3)
                 ep_ = np.concatenate((ep_, sample['env_infos']['er'].reshape(T, 1, 3)), axis=2)
                 ev_ = sample['observations'][:, 3:].reshape(T, 1, 3)
